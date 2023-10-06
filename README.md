@@ -258,8 +258,6 @@ In order to check the template version refer to the [sk116585](https://supportce
 | ---------------- | ------------- |
 | 20231005 | First commit of GCP NCC Hub and Spoke with Check Point Check Point CloudGuard IaaS single gateway and management Terraform module. |
 | | | |
-|  | Addition of "template_type" parameter to "cloud-version" files. |
-| | | |
 
 ## Authors
 [CB Currier - Cloud Alliance Architect](mailto:ccurrier@checkpoint.com)
