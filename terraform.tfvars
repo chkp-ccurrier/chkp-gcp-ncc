@@ -16,7 +16,7 @@ generatePassword                            = false
 allowUploadDownload                         = true
 sicKey                                      = "qwe123qwe123"
 managementGUIClientNetwork                  = "0.0.0.0/0"
-#management_name                             = ""
+hub_name                                    = "NCC-east-hub"
 # --- Networking---
 region                                      = "us-east1" #"us-central1"
 region2                                     = "us-central1"  #"us-east1"

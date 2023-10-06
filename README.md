@@ -235,6 +235,8 @@ enableMonitoring = false
 |  |  |  |  |  |
 | managementGUIClientNetwork | Allowed GUI clients | string | A valid IPv4 network CIDR (e.g. 0.0.0.0/0) |0.0.0.0/0|no|
 |  |  |  |  |  |
+| hub_name | Name of the NCC hub.  | string | a name either the base region or other.|US-East-Hub|no|
+|  |  |  |  |  |
 | numAdditionalNICs | Number of additional network interfaces | number | A number in the range 0 - 8.<br/>Multiple network interfaces deployment is described in [sk121637 - Deploy a CloudGuard for GCP with Multiple Network Interfaces](https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk121637) |0|no|
 |  |  |  |  |  |
 | externalIP | External IP address type | string | Static;<br/>Ephemeral;<br/>An external IP address associated with this instance. Selecting "None" will result in the instance having no external internet access. [Learn more](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address?_ga=2.259654658.-962483654.1585043745) |static|no|
