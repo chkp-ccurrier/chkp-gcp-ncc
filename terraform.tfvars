@@ -25,7 +25,6 @@ zoneA                                       = "us-east1-b"   #"us-central1-a"
 zoneB                                       = "us-east1-c"  #"us-central1-b"
 network                                     = ["spoke1","spoke2"]
 subnetwork                                  = ["spoke1-sub-a","spoke1-sub-b","spoke2-sub"]
-network_enableTcp                           = true
 network_tcpSourceRanges                     = ["0.0.0.0/0"]
 numAdditionalNICs                           =  1
 externalIP                                  = "static"
