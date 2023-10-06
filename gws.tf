@@ -114,7 +114,7 @@ resource "google_compute_instance" "gatewayA" {
     hasInternet = "true"
     enableMonitoring = var.enableMonitoring
     shell = var.admin_shell
-    installationType = var.gw_installationType
+    installationType = var.installationType
     computed_sic_key = var.sicKey
     managementGUIClientNetwork = var.managementGUIClientNetwork
     installSecurityManagement = false
@@ -253,7 +253,7 @@ resource "google_compute_instance" "gatewayB" {
     hasInternet = "true"
     enableMonitoring = var.enableMonitoring
     shell = var.admin_shell
-    installationType = var.gw_installationType
+    installationType = var.installationType
     computed_sic_key = var.sicKey
     managementGUIClientNetwork = var.managementGUIClientNetwork
     installSecurityManagement = false

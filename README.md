@@ -2,6 +2,8 @@
 
 Terraform module deploys a GCP NCC Hub, 2 Spokes, each connected to a Router Appliance Interface - single Check Point CGNS gateway and management.
 
+![Transit Routing](/Chkp-GCP-NCC-Transit_Routing.png)
+
 These types of Terraform resources are supported:
  [Instance Template](https://www.terraform.io/docs/providers/google/r/compute_instance_template.html)
  [Firewall](https://www.terraform.io/docs/providers/google/r/compute_firewall.html) - conditional creation
@@ -158,17 +160,6 @@ enableMonitoring = false
     terraform destroy
     ```
 
-## Conditional creation
-To create Firewall and allow traffic for ICMP, TCP, UDP, SCTP or/and ESP - enter list of Source IP ranges.
-```
-ICMP_traffic = ["123.123.0.0/24", "234.234.0.0/24"]
-TCP_traffic = ["0.0.0.0/0"]
-UDP_traffic = ["0.0.0.0/0"]
-SCTP_traffic = ["0.0.0.0/0"]
-ESP_traffic = ["0.0.0.0/0"]
-```
-Please leave empty list for a protocol if you want to disable traffic for it.
-
 ## Inputs
 | Name          | Description   | Type          | Allowed values |Default| Required      |
 | ------------- | ------------- | ------------- | -------------  |-------|---------------|
@@ -176,46 +167,56 @@ Please leave empty list for a protocol if you want to disable traffic for it.
 |  |  |  |  |  |
 | project  | Personal project id. The project indicates the default GCP project all of your resources will be created in.  | string  | N/A | "" | yes |
 |  |  |  |  |  |
-| zone | The zone determines what computing resources are available and where your data is stored and used | string | List of allowed [Regions and Zones](https://cloud.google.com/compute/docs/regions-zones?_ga=2.31926582.-962483654.1585043745) |us-central1-a|yes|
+| ha  | Is this deployment a High Availabilty deployment?  | string  | yes <br/>no | "no" | yes |
 |  |  |  |  |  |
-| image_name |The single gateway or management image name (e.g. check-point-r8110-gw-byol-single-335-985-v20220126 for gateway or check-point-r8110-byol-335-883-v20210706 for management). You can choose the desired gateway image value from [Github](https://github.com/CheckPointSW/CloudGuardIaaS/blob/master/gcp/deployment-packages/single-byol/images.py).| string | N/A | N/A | yes |
+| image_name |The HA gateway image name (e.g. check-point-r8120-gw-byol-single for gateway). You can choose the desired gateway image value from [Github](https://github.com/CheckPointSW/CloudGuardIaaS/blob/master/gcp/deployment-packages/single-byol/images.py).| string | N/A | N/A | yes |
+|  |  |  |  |  |
+| image_single_name |The single gateway name (e.g. check-point-r8120-gw-byol-single for gateway). You can choose the desired gateway image value from [Github](https://github.com/CheckPointSW/CloudGuardIaaS/blob/master/gcp/deployment-packages/single-byol/images.py).| string | N/A | N/A | yes |
+|  |  |  |  |  |
+| mgmt_image_name |The single gateway name (e.g. check-point-r8120-byol for management). You can choose the desired management image value from [Github](https://github.com/CheckPointSW/CloudGuardIaaS/blob/master/gcp/deployment-packages/single-byol/images.py).| string | N/A | N/A | yes |
 |  |  |  |  |  |
 | installationType | Installation type and version | string |Gateway only;<br/> Management only;<br/> Manual Configuration<br/>Gateway and Management (Standalone) |Gateway only|yes|
 |  |  |  |  |  |
 | license | Checkpoint license (BYOL or PAYG).|string|BYOL; <br/>PAYG;|BYOL|yes|
 |  |  |  |  |  |
-| prefix | (Optional) Resources name prefix|string|N\A|chkp-single-tf-|no|
+| prefix | (Optional) Resources name prefix|string|N\A|chkp-ncc-tf-|no|
 |  |  |  |  |  |
-| machineType | Machine types determine the specifications of your machines, such as the amount of memory, virtual cores, and persistent disk limits an instance will have | string | [Learn more about Machine Types](https://cloud.google.com/compute/docs/machine-types?hl=en_US&_ga=2.267871494.-962483654.1585043745) | n1-standard-4|no|
+| region | A region is a specific geographical location where you can host your resources. Regions have three or more zones. | string | List of allowed [Regions and Zones](https://cloud.google.com/compute/docs/regions-zones?_ga=2.31926582.-962483654.1585043745) |us-central1|yes|
+|  |  |  |  |  |
+| region2 | The regions determines what computing resources are available and where your data is stored and used | string | List of allowed [Regions and Zones](https://cloud.google.com/compute/docs/regions-zones?_ga=2.31926582.-962483654.1585043745) |us-east1|yes|
+|  |  |  |  |  |
+| zone | The zone determines what computing resources are available and where your data is stored and used. This is for Management | string | List of allowed [Regions and Zones](https://cloud.google.com/compute/docs/regions-zones?_ga=2.31926582.-962483654.1585043745) |us-central1-a|yes|
+|  |  |  |  |  |
+| zoneA | The zone determines what computing resources are available and where your data is stored and used. This is for GW A Zone | string | List of allowed [Regions and Zones](https://cloud.google.com/compute/docs/regions-zones?_ga=2.31926582.-962483654.1585043745) |us-central1-a|yes|
+|  |  |  |  |  |
+| zoneB | The zone determines what computing resources are available and where your data is stored and used. This is for GW B zone. | string | List of allowed [Regions and Zones](https://cloud.google.com/compute/docs/regions-zones?_ga=2.31926582.-962483654.1585043745) |us-central1-a|yes|
 |  |  |  |  |  |
 | network | The network determines what network traffic the instance can access | list(string) | Available network in the chosen zone  |N/A|yes|
 |  |  |  |  |  |
 | Subnetwork | Assigns the instance an IPv4 address from the subnetwork’s range. Instances in different subnetworks can communicate with each other using their internal IPs as long as they belong to the same network. | list(string) | Available subnetwork in the chosen network  |N/A|yes|
 |  |  |  |  |  |
-| network_enableTcp | Allow TCP traffic from the Internet | boolean | true; <br/>false;  |false|no|
-|  |  |  |  |  |
 | network_tcpSourceRanges | Allow TCP traffic from the Internet | list(string) | Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. For gateway all ports are allowed. For management allowed ports are: 257,18191,18210,18264,22,443,18190,19009 [Learn more](https://cloud.google.com/vpc/docs/vpc?_ga=2.36703144.-962483654.1585043745#firewalls) |N/A|no|
 |  |  |  |  |  |
-| network_enableGwNetwork | This is relevant for Management only. The network in which managed gateways reside | boolean | true; <br/>false;  |false|no|
+| internal_network1_network | The internal_network1_network is a list of network namces created on different spokes | list(string) | Available network in the chosen zone  |N/A|yes|
 |  |  |  |  |  |
-| network_gwNetworkSourceRanges | Allow TCP traffic from the Internet | list(string) | Enter a valid IPv4 network CIDR (e.g. 0.0.0.0/0) |N/A|no|
+| internal_network1_subnetwork | Are subnets created under the internal_network1_networks. Instances in different subnetworks can communicate with each other using their internal IPs as long as they belong to the same network. | list(string) | Available subnetwork in the chosen network  |N/A|yes|
 |  |  |  |  |  |
-| network_enableIcmp | Allow ICMP traffic from the Internet | boolean | true; <br/>false;  |false|no|
+| new_subnet_0_cidr | TCP Address definitions for related internal_network1_subnetworks | list(string) | Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. [Learn more](https://cloud.google.com/vpc/docs/vpc?_ga=2.36703144.-962483654.1585043745#firewalls) |N/A|no|
 |  |  |  |  |  |
-| network_icmpSourceRanges | Source IP ranges for ICMP traffic | list(string) | Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. For gateway only. [Learn more](https://cloud.google.com/vpc/docs/vpc?_ga=2.36703144.-962483654.1585043745#firewalls) |N/A|no|
+| new_subnet_1_cidr | TCP Address definitions for related internal_network1_subnetworks | list(string) | Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. [Learn more](https://cloud.google.com/vpc/docs/vpc?_ga=2.36703144.-962483654.1585043745#firewalls) |N/A|no|
 |  |  |  |  |  |
-| network_enableUdp | Allow UDP traffic from the Internet | boolean | true; <br/>false;  |false|no|
+| new_subnet_0_str | String representation of related TCP Subnet Cidr  | list(string) | Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. [Learn more](https://cloud.google.com/vpc/docs/vpc?_ga=2.36703144.-962483654.1585043745#firewalls) |N/A|no|
 |  |  |  |  |  |
-| network_udpSourceRanges | Source IP ranges for UDP traffic | list(string) | Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. For gateway only - all ports are allowed. [Learn more](https://cloud.google.com/vpc/docs/vpc?_ga=2.36703144.-962483654.1585043745#firewalls) |N/A|no|
+| ha_vip | String value for HA VIP  | string | Traffic for Cluster vip. |"2"|no|
 |  |  |  |  |  |
-| network_enableSctp | Allow SCTP traffic from the Internet | boolean | true; <br/>false;  |false|no|
+| ha_a_ip | String value for A GW  | string | IP for Traffic for GW. |"3"|no|
 |  |  |  |  |  |
-| network_sctpSourceRanges | Source IP ranges for SCTP traffic | list(string) | Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. For gateway only - all ports are allowed. [Learn more](https://cloud.google.com/vpc/docs/vpc?_ga=2.36703144.-962483654.1585043745#firewalls) |N/A|no|
+| ha_b_ip | String value for B GW  | string | IP for Traffic for GW. |"4"|no|
 |  |  |  |  |  |
-| network_enableEsp | Allow ESP traffic from the Internet | boolean | true; <br/>false; |false|no|
+| mgmt_ip | String value for Management Ip Address  | string | IP for Traffic for Management. |"100"|no|
 |  |  |  |  |  |
-| network_espSourceRanges | Source IP ranges for ESP traffic | list(string) | Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. For gateway only. [Learn more](https://cloud.google.com/vpc/docs/vpc?_ga=2.36703144.-962483654.1585043745#firewalls) |N/A|no|
 |  |  |  |  |  |
+| machineType | Machine types determine the specifications of your machines, such as the amount of memory, virtual cores, and persistent disk limits an instance will have | string | [Learn more about Machine Types](https://cloud.google.com/compute/docs/machine-types?hl=en_US&_ga=2.267871494.-962483654.1585043745) | n1-standard-4|no|
 | diskType | Disk type | string | SSD Persistent Disk;<br/>standard-Persistent Disk;<br/>Storage space is much less expensive for a standard persistent disk. An SSD persistent disk is better for random IOPS or streaming throughput with low latency. [Learn more](https://cloud.google.com/compute/docs/disks/?hl=en_US&_ga=2.66020774.-962483654.1585043745#overview_of_disk_types)|SSD Persistent Disk|no|
 |  |  |  |  |  |
 | bootDiskSizeGb | Disk size in GB | number | Persistent disk performance is tied to the size of the persistent disk volume. You are charged for the actual amount of provisioned disk space. [Learn more](https://cloud.google.com/compute/docs/disks/?hl=en_US&_ga=2.232680471.-962483654.1585043745#pdperformance)|100|no|
@@ -245,11 +246,9 @@ Please leave empty list for a protocol if you want to disable traffic for it.
 | Name  | Description |
 | ------------- | ------------- |
 | SIC_key  | Secure Internal Communication (SIC) initiation key.  |
-| ICMP_firewall_rules_name  | If enable - the ICMP firewall rules name, otherwise, an empty list.  |
-| TCP_firewall_rules_name  | If enable - the TCP firewall rules name, otherwise, an empty list.  |
-| UDP_firewall_rules_name  | If enable - the UDP firewall rules name, otherwise, an empty list.  |
-| SCTP_firewall_rules_name  | If enable - the SCTP firewall rules name, otherwise, an empty list.  |
-| ESP_firewall_rules_name  | If enable - the ESP firewall rules name, otherwise, an empty list.  |
+| ManagementIP  | Public IP address of the Management server.  |
+| GW_A_IP  | Public IP Address of the A gateway.  |
+| GW_B_IP  | Public IP Address of the A gateway.  |
 
 
 ## Revision History
@@ -257,16 +256,14 @@ In order to check the template version refer to the [sk116585](https://supportce
 
 | Template Version | Description   |
 | ---------------- | ------------- |
-| 20230109 | Updated startup script to use cloud-config. |
-| | | |
-| 20201208 | First release of Check Point Check Point CloudGuard IaaS High Availability Terraform solution on GCP. |
+| 20231005 | First commit of GCP NCC Hub and Spoke with Check Point Check Point CloudGuard IaaS single gateway and management Terraform module. |
 | | | |
 |  | Addition of "template_type" parameter to "cloud-version" files. |
 | | | |
 
 ## Authors
-
+[CB Currier - Cloud Alliance Architect](mailto:ccurrier@checkpoint.com)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](../../../LICENSE) file for details
+This project is licensed under the Apache License - see the [LICENSE](/LICENSE) file for details

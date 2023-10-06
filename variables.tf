@@ -3,19 +3,9 @@ variable "service_account_path" {
   description = "User service account path in JSON format - From the service account key page in the Cloud Console choose an existing account or create a new one. Next, download the JSON key file. Name it something you can remember, store it somewhere secure on your machine, and supply the path to the location is stored."
   default = "../../project-name-sa-cert.json"
 }
-variable asg {
-  type = string
-  description = "Deploy an AutoScaling configuration"
-  default = ""
-}
 variable ha {
   type = string
   description = "Deploy a ha configuration"
-  default = ""
-}
-variable server {
-  type = string
-  description = "Deploy a single GW configuration"
   default = ""
 }
 variable "project" {
@@ -53,11 +43,6 @@ variable "zoneB" {
   description = "The zone determines what computing resources are available and where your data is stored and used"
   default = "us-central1-b"
 }
-variable "zoneC" {
-  type = string
-  description = "The zone determines what computing resources are available and where your data is stored and used"
-  default = "us-east1-a"
-}
 variable "management_name" {
   type = string
   description = "The name of the Security Management Server as appears in autoprovisioning configuration. (Please enter a valid Security Management name including ascii characters only)"
@@ -70,6 +55,10 @@ variable "image_name" {
 variable "image_single_name" {
   type = string
   description = "The single gateway and management image name"
+}
+variable "mgmt_image_name" {
+  type = string
+  description = "The image name for the management server."
 }
 variable "installationType" {
   type = string
@@ -105,65 +94,9 @@ variable "subnetwork" {
   description = "Assigns the instance an IPv4 address from the subnetwork’s range. Instances in different subnetworks can communicate with each other using their internal IPs as long as they belong to the same network."
   default = ["default"]
 }
-variable "network_enableTcp" {
-  type = bool
-  description = "Allow TCP traffic from the Internet"
-  default = false
-}
 variable "network_tcpSourceRanges" {
   type = list(string)
   description = "Allow TCP traffic from the Internet"
-  default = []
-}
-variable "network_enableGwNetwork" {
-  type = bool
-  description = "This is relevant for Management only. The network in which managed gateways reside"
-  default = false
-}
-variable network_gwNetworkSourceRanges{
-  type = list(string)
-  description = "Allow TCP traffic from the Internet"
-  default = []
-}
-variable "network_enableIcmp" {
-  type = bool
-  description ="Allow ICMP traffic from the Internet"
-  default = false
-}
-variable "network_icmpSourceRanges" {
-  type = list(string)
-  description = "(Optional) Source IP ranges for ICMP traffic - Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. Please leave empty list to unable ICMP traffic."
-  default = []
-}
-variable network_enableUdp{
-  type = bool
-  description ="Allow UDP traffic from the Internet"
-  default = false
-}
-variable "network_udpSourceRanges" {
-  type = list(string)
-  description = "(Optional) Source IP ranges for UDP traffic - Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. Please leave empty list to unable UDP traffic."
-  default = []
-}
-variable "network_enableSctp" {
-  type = bool
-  description ="Allow SCTP traffic from the Internet"
-  default = false
-}
-variable "network_sctpSourceRanges" {
-  type = list(string)
-  description = "(Optional) Source IP ranges for SCTP traffic - Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. Please leave empty list to unable SCTP traffic."
-  default = []
-}
-
-variable "network_enableEsp" {
-  type = bool
-  description ="Allow ESP traffic from the Internet	"
-  default = false
-}
-variable "network_espSourceRanges" {
-  type = list(string)
-  description = "(Optional) Source IP ranges for ESP traffic - Traffic is only allowed from sources within these IP address ranges. Use CIDR notation when entering ranges. Please leave empty list to unable ESP traffic."
   default = []
 }
 variable "diskType" {

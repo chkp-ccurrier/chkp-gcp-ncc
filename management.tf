@@ -4,7 +4,7 @@ module "management" {
   project                             = var.project
   service_account_path                = var.service_account_path
   naming_prefix                       = var.prefix
-  image_name                          = "check-point-r8120-byol"
+  image_name                          = var.mgmt_image_name
   mgmt_vpc                            = var.network[0]
   mgmt_subnet                         = var.subnetwork[0]
   installationType                    = "Management only"

@@ -10,6 +10,7 @@ output "GW_B_IP" {
 output "GW_A_IP" {
   value = google_compute_address.staticA.address
 }
+/* 
 output "spoke1-vm-1" {
     value = google_compute_instance.spoke1-vm-1.network_interface[0].access_config[0].nat_ip
 }
@@ -17,3 +18,4 @@ output "spoke1-vm-1" {
 output "spoke2-vm-1" {
     value = google_compute_instance.spoke2-vm-1.network_interface[0].access_config[0].nat_ip
 }
+*/
